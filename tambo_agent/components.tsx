@@ -1,4 +1,11 @@
-// agent/tambo_agent/components.ts
+// @ts-nocheck
+// agent/tambo_agent/components.tsx
+//
+// LEGACY FILE — Old Mutual design-system demo.
+// Not used by the creative components pipeline (scripts/generate.py).
+// Kept for reference only. Deps (@tambo-ai/react, zod) are NOT installed.
+
+import React from "react";
 import { TamboComponent } from "@tambo-ai/react";
 import { z } from "zod";
 
