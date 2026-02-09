@@ -18,8 +18,6 @@ const componentModules: Record<string, React.LazyExoticComponent<React.FC<any>>>
 const previewProps: Record<string, Record<string, any>> = {
   FloatingKnot:         { speed: 1, color: "#6c5ce7" },
   ProductViewer:        { imageUrl: "https://picsum.photos/512/512", rotateSpeed: 0.5, color: "#ffffff" },
-  FloatingCrystalScene: { speed: 1, color: "#00cec9" },
-  CreateHeroComponet:   {},
   ParallaxReveal:       { children: React.createElement("h2", { style: { fontSize: 24, color: "#fff", padding: 20, textAlign: "center" as const }}, "↓ I fade in on scroll ↓"), offset: 60 },
   HorizontalScroll:     { children: [1,2,3].map(i => React.createElement("div", { key: i, style: { width: "80vw", height: "300px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 48, fontWeight: 700, color: "#333", background: `hsl(${i*100}, 60%, 85%)`, flexShrink: 0 }}, `Panel ${i}`)) },
   MagneticButton:       { children: "Hover me", strength: 0.35, backgroundColor: "#6c5ce7" },

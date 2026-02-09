@@ -78,21 +78,5 @@
     "prompt": "Crossfade page transition with depth scale and opacity",
     "prompt_hash": "seed_010",
     "generated_at": "2026-02-09T00:00:00+00:00"
-  },
-  {
-    "name": "FloatingCrystalScene",
-    "category": "3d-scenes",
-    "file": "3d-scenes/FloatingCrystalScene.tsx",
-    "prompt": "Floating crystal 3D scene",
-    "prompt_hash": "f63aa1447853",
-    "generated_at": "2026-02-09T18:07:06.041103+00:00"
-  },
-  {
-    "name": "CreateHeroComponet",
-    "category": "3d-scenes",
-    "file": "3d-scenes/CreateHeroComponet.tsx",
-    "prompt": "Create a hero componet based on attached image",
-    "prompt_hash": "da9aec179b30",
-    "generated_at": "2026-02-09T18:20:32.715114+00:00"
   }
 ]
