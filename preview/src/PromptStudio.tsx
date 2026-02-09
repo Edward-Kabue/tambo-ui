@@ -50,14 +50,6 @@ const CATEGORIES = [
   "page-transitions",
 ];
 
-const EXAMPLE_PROMPTS = [
-  { text: "Floating crystal 3D scene", category: "3d-scenes" },
-  { text: "Magnetic button interaction", category: "micro-interactions" },
-  { text: "Aurora shader background", category: "shader-backgrounds" },
-  { text: "Parallax scroll reveal", category: "scroll-animations" },
-  { text: "Page wipe transition", category: "page-transitions" },
-];
-
 // ---------------------------------------------------------------------------
 // Styles
 // ---------------------------------------------------------------------------
@@ -353,6 +345,47 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: "11px",
     color: "#555",
     marginTop: "8px",
+  },
+
+  // Attachments
+  attachmentsRow: {
+    display: "flex",
+    gap: "8px",
+    marginTop: "8px",
+    flexWrap: "wrap" as const,
+  },
+  attachmentInput: {
+    flex: 1,
+    minWidth: "200px",
+    padding: "8px 12px",
+    borderRadius: "8px",
+    border: "1px solid #333",
+    background: "#1a1a1a",
+    color: "#e0e0e0",
+    fontSize: "12px",
+    outline: "none",
+    transition: "border-color 0.2s ease",
+  },
+  attachmentBadge: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "6px",
+    padding: "4px 10px",
+    borderRadius: "12px",
+    background: "#6c5ce722",
+    border: "1px solid #6c5ce733",
+    color: "#6c5ce7",
+    fontSize: "11px",
+    fontWeight: 500,
+  },
+  attachmentClear: {
+    background: "none",
+    border: "none",
+    color: "#6c5ce7",
+    cursor: "pointer",
+    padding: 0,
+    fontSize: "14px",
+    lineHeight: 1,
   },
 
   // Modal
@@ -1429,34 +1462,14 @@ const AssistantMessage: React.FC<AssistantMessageProps> = ({ message, onCopy }) 
 // Empty State
 // ---------------------------------------------------------------------------
 
-interface EmptyStateProps {
-  onSelectPrompt: (prompt: string, category: string) => void;
-}
-
-const EmptyState: React.FC<EmptyStateProps> = ({ onSelectPrompt }) => (
+const EmptyState: React.FC = () => (
   <div style={styles.emptyState}>
     <div style={styles.emptyTitle}>Component Generator</div>
     <div style={styles.emptySubtitle}>
       Describe a React component and I'll generate it with Three.js, GSAP, and modern styling.
-    </div>
-    <div style={styles.exampleChips}>
-      {EXAMPLE_PROMPTS.map((ex) => (
-        <button
-          key={ex.text}
-          style={styles.exampleChip}
-          onClick={() => onSelectPrompt(ex.text, ex.category)}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = "#6c5ce7";
-            e.currentTarget.style.color = "#fff";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = "#333";
-            e.currentTarget.style.color = "#aaa";
-          }}
-        >
-          {ex.text}
-        </button>
-      ))}
+      <br />
+      <br />
+      You can attach reference URLs and images below the input to inform the design.
     </div>
   </div>
 );
@@ -1468,12 +1481,15 @@ const EmptyState: React.FC<EmptyStateProps> = ({ onSelectPrompt }) => (
 const PromptStudio: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [referenceUrl, setReferenceUrl] = useState("");
   const [category, setCategory] = useState(() => {
     return localStorage.getItem("promptStudio.category") || "3d-scenes";
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -1501,25 +1517,85 @@ const PromptStudio: React.FC = () => {
     adjustTextareaHeight();
   }, [input, adjustTextareaHeight]);
 
-  const generateComponent = useCallback(async (prompt: string, cat: string) => {
+  // Handle image paste
+  const uploadPastedImage = useCallback(async (file: File) => {
+    setUploadingImage(true);
+    const reader = new FileReader();
+    reader.onload = async () => {
+      try {
+        const res = await fetch("/api/captures", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            data: reader.result as string,
+            filename: file.name,
+          }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const fullUrl = `${window.location.origin}${data.url}`;
+          setImageUrl(fullUrl);
+        }
+      } catch (err) {
+        console.error("Failed to upload pasted image:", err);
+      } finally {
+        setUploadingImage(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  }, []);
+
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      if (!textareaRef.current) return;
+      if (document.activeElement !== textareaRef.current) return;
+      
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.startsWith("image/")) {
+          e.preventDefault();
+          const file = items[i].getAsFile();
+          if (file) {
+            uploadPastedImage(file);
+          }
+          break;
+        }
+      }
+    };
+    
+    window.addEventListener("paste", handlePaste);
+    return () => window.removeEventListener("paste", handlePaste);
+  }, [uploadPastedImage]);
+
+  const generateComponent = useCallback(async (prompt: string, cat: string, imgUrl?: string, refUrl?: string) => {
     if (!prompt.trim() || isGenerating) return;
 
     // Add user message
     const userMsg: Message = {
       id: `user-${Date.now()}`,
       role: "user",
-      content: prompt,
+      content: prompt + 
+        (imgUrl ? `\n[Image: ${imgUrl}]` : "") + 
+        (refUrl ? `\n[Reference: ${refUrl}]` : ""),
       timestamp: new Date(),
     };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
+    setImageUrl("");
+    setReferenceUrl("");
     setIsGenerating(true);
 
     try {
+      const payload: any = { prompt, category: cat };
+      if (imgUrl) payload.image = imgUrl;
+      if (refUrl) payload.url = refUrl;
+      
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, category: cat }),
+        body: JSON.stringify(payload),
       });
 
       const data: GenerateResponse = await res.json();
@@ -1563,8 +1639,8 @@ const PromptStudio: React.FC = () => {
   }, [isGenerating]);
 
   const handleSubmit = useCallback(() => {
-    generateComponent(input, category);
-  }, [input, category, generateComponent]);
+    generateComponent(input, category, imageUrl, referenceUrl);
+  }, [input, category, imageUrl, referenceUrl, generateComponent]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -1572,11 +1648,6 @@ const PromptStudio: React.FC = () => {
       handleSubmit();
     }
   }, [handleSubmit]);
-
-  const handleSelectPrompt = useCallback((prompt: string, cat: string) => {
-    setCategory(cat);
-    generateComponent(prompt, cat);
-  }, [generateComponent]);
 
   const canSend = input.trim().length > 0 && !isGenerating;
 
@@ -1618,7 +1689,7 @@ const PromptStudio: React.FC = () => {
         <div style={styles.messagesContainer}>
           <div style={styles.messagesInner}>
             {messages.length === 0 ? (
-              <EmptyState onSelectPrompt={handleSelectPrompt} />
+              <EmptyState />
             ) : (
               <>
                 {messages.map((msg) =>
@@ -1670,8 +1741,58 @@ const PromptStudio: React.FC = () => {
                 {isGenerating ? "..." : "\u2191"}
               </button>
             </div>
+            
+            {/* Attachments */}
+            <div style={styles.attachmentsRow}>
+              <input
+                type="text"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                placeholder={uploadingImage ? "Uploading image..." : "Image URL (optional)"}
+                style={styles.attachmentInput}
+                disabled={uploadingImage}
+              />
+              <input
+                type="text"
+                value={referenceUrl}
+                onChange={(e) => setReferenceUrl(e.target.value)}
+                placeholder="Reference URL (optional)"
+                style={styles.attachmentInput}
+              />
+            </div>
+            
+            {/* Attachment badges */}
+            {(imageUrl || referenceUrl) && (
+              <div style={{ ...styles.attachmentsRow, marginTop: "4px" }}>
+                {imageUrl && (
+                  <span style={styles.attachmentBadge}>
+                    🖼 Image
+                    <button
+                      style={styles.attachmentClear}
+                      onClick={() => setImageUrl("")}
+                      title="Clear"
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
+                {referenceUrl && (
+                  <span style={styles.attachmentBadge}>
+                    🔗 Reference
+                    <button
+                      style={styles.attachmentClear}
+                      onClick={() => setReferenceUrl("")}
+                      title="Clear"
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
+              </div>
+            )}
+            
             <div style={styles.inputHint}>
-              Press Enter to send, Shift+Enter for new line
+              Press Enter to send, Shift+Enter for new line • Paste images with Ctrl+V
             </div>
           </div>
         </div>

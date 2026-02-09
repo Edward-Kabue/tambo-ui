@@ -6,30 +6,28 @@ import manifest from "../../generated_components/index.json";
 // ---------------------------------------------------------------------------
 
 const componentModules: Record<string, React.LazyExoticComponent<React.FC<any>>> = {
-  FloatingKnot:    lazy(() => import("@components/3d-scenes/FloatingKnot")),
-  ProductViewer:   lazy(() => import("@components/3d-scenes/ProductViewer")),
-  ParallaxReveal:  lazy(() => import("@components/scroll-animations/ParallaxReveal")),
-  HorizontalScroll:lazy(() => import("@components/scroll-animations/HorizontalScroll")),
-  MagneticButton:  lazy(() => import("@components/micro-interactions/MagneticButton")),
-  PulseLoader:     lazy(() => import("@components/micro-interactions/PulseLoader")),
-  AuroraMesh:      lazy(() => import("@components/shader-backgrounds/AuroraMesh")),
-  ParticleFog:     lazy(() => import("@components/shader-backgrounds/ParticleFog")),
-  WipeTransition:  lazy(() => import("@components/page-transitions/WipeTransition")),
-  CrossfadeDepth:  lazy(() => import("@components/page-transitions/CrossfadeDepth")),
+  FloatingKnot:         lazy(() => import("@components/3d-scenes/FloatingKnot")),
+  ProductViewer:        lazy(() => import("@components/3d-scenes/ProductViewer")),
+  AuroraMesh:           lazy(() => import("@components/shader-backgrounds/AuroraMesh")),
+  ParticleFog:          lazy(() => import("@components/shader-backgrounds/ParticleFog")),
+  WipeTransition:       lazy(() => import("@components/page-transitions/WipeTransition")),
+  CrossfadeDepth:       lazy(() => import("@components/page-transitions/CrossfadeDepth")),
 };
 
 // Default props for preview rendering
 const previewProps: Record<string, Record<string, any>> = {
-  FloatingKnot:    { speed: 1, color: "#6c5ce7" },
-  ProductViewer:   { imageUrl: "https://picsum.photos/512/512", rotateSpeed: 0.5, color: "#ffffff" },
-  ParallaxReveal:  { children: React.createElement("h2", { style: { fontSize: 24, color: "#fff", padding: 20, textAlign: "center" as const }}, "↓ I fade in on scroll ↓"), offset: 60 },
-  HorizontalScroll:{ children: [1,2,3].map(i => React.createElement("div", { key: i, style: { width: "80vw", height: "300px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 48, fontWeight: 700, color: "#333", background: `hsl(${i*100}, 60%, 85%)`, flexShrink: 0 }}, `Panel ${i}`)) },
-  MagneticButton:  { children: "Hover me", strength: 0.35, backgroundColor: "#6c5ce7" },
-  PulseLoader:     { size: 14, color: "#00cec9", count: 4 },
-  AuroraMesh:      { colors: ["#6c5ce7","#00cec9","#fd79a8"] as [string,string,string], speed: 0.8 },
-  ParticleFog:     { count: 300, color: "#ffffff", speed: 0.2, size: 0.02 },
-  WipeTransition:  {},
-  CrossfadeDepth:  {},
+  FloatingKnot:         { speed: 1, color: "#6c5ce7" },
+  ProductViewer:        { imageUrl: "https://picsum.photos/512/512", rotateSpeed: 0.5, color: "#ffffff" },
+  FloatingCrystalScene: { speed: 1, color: "#00cec9" },
+  CreateHeroComponet:   {},
+  ParallaxReveal:       { children: React.createElement("h2", { style: { fontSize: 24, color: "#fff", padding: 20, textAlign: "center" as const }}, "↓ I fade in on scroll ↓"), offset: 60 },
+  HorizontalScroll:     { children: [1,2,3].map(i => React.createElement("div", { key: i, style: { width: "80vw", height: "300px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 48, fontWeight: 700, color: "#333", background: `hsl(${i*100}, 60%, 85%)`, flexShrink: 0 }}, `Panel ${i}`)) },
+  MagneticButton:       { children: "Hover me", strength: 0.35, backgroundColor: "#6c5ce7" },
+  PulseLoader:          { size: 14, color: "#00cec9", count: 4 },
+  AuroraMesh:           { colors: ["#6c5ce7","#00cec9","#fd79a8"] as [string,string,string], speed: 0.8 },
+  ParticleFog:          { count: 300, color: "#ffffff", speed: 0.2, size: 0.02 },
+  WipeTransition:       {},
+  CrossfadeDepth:       {},
 };
 
 // ---------------------------------------------------------------------------

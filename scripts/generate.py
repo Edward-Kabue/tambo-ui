@@ -129,15 +129,18 @@ def build_messages(
     url_context: Optional[str] = None,
     image_context: Optional[str] = None,
     retry_error: Optional[str] = None,
+    max_examples: int = 1,
 ) -> list[dict]:
     """Build the chat messages array for the LLM call."""
     system = load_system_prompt()
 
-    # Add few-shot examples for the target category
+    # Add few-shot examples for the target category (limit for speed)
     examples = load_few_shot()
-    cat_examples = [e for e in examples if e["category"] == category]
+    cat_examples = [
+        e for e in examples if e["category"] == category
+    ][:max_examples]
     if cat_examples:
-        system += "\n\nFEW-SHOT EXAMPLES:\n"
+        system += "\n\nFEW-SHOT EXAMPLE:\n"
         for ex in cat_examples:
             system += (
                 f"\nUser: {ex['prompt']}\n"
@@ -165,11 +168,12 @@ def build_messages(
 def call_agent(messages: list[dict]) -> str:
     """Send messages to LLM and return the raw text."""
     url = f"{LM_STUDIO_URL}/chat/completions"
+    max_tokens = int(os.getenv("AGENT_MAX_TOKENS", "2500"))
     payload = json.dumps({
         "model": MODEL,
         "messages": messages,
         "temperature": TEMPERATURE,
-        "max_tokens": 4096,
+        "max_tokens": max_tokens,
     }).encode("utf-8")
     req = urllib.request.Request(
         url,
