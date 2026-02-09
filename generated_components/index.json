@@ -78,5 +78,21 @@
     "prompt": "Crossfade page transition with depth scale and opacity",
     "prompt_hash": "seed_010",
     "generated_at": "2026-02-09T00:00:00+00:00"
+  },
+  {
+    "name": "TestButton",
+    "category": "micro-interactions",
+    "file": "micro-interactions/TestButton.tsx",
+    "prompt": "test button",
+    "prompt_hash": "00ee7c8e5f23",
+    "generated_at": "2026-02-09T18:04:57.715930+00:00"
+  },
+  {
+    "name": "FloatingCrystalScene",
+    "category": "3d-scenes",
+    "file": "3d-scenes/FloatingCrystalScene.tsx",
+    "prompt": "Floating crystal 3D scene",
+    "prompt_hash": "f63aa1447853",
+    "generated_at": "2026-02-09T18:07:06.041103+00:00"
   }
 ]

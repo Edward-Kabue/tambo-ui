@@ -18,9 +18,11 @@ build/
 node_modules/
 npm-debug.log*
 yarn-debug.log*
-!README.md
-*.md
 yarn-error.log*
+
+# === Markdown (ignore all except README.md) ===
+*.md
+!README.md
 lerna-debug.log*
 .pnpm-debug.log*
 
@@ -142,9 +144,6 @@ temp/
 .parcel-cache/
 
 # === Project Specific ===
-# Internal planning documents
-BRD_Creative_Components.md
-
 # LM Studio / local model artifacts (optional - uncomment if you download models locally)
 # *.gguf
 # *.bin

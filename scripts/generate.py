@@ -27,10 +27,9 @@ import subprocess
 import sys
 import hashlib
 import datetime
+import urllib.request
 from pathlib import Path
 from typing import Optional
-
-import openai
 
 # ---------------------------------------------------------------------------
 # Fetch helpers — allow the agent to access links and images
@@ -96,10 +95,10 @@ def describe_image_url(url: str) -> str:
 # ---------------------------------------------------------------------------
 
 # Point at LM Studio local endpoint
-openai.api_base = os.getenv("LM_STUDIO_URL", "http://localhost:1234/v1")
-openai.api_key = os.getenv("LM_STUDIO_KEY", "EMPTY")
+LM_STUDIO_URL = os.getenv("LM_STUDIO_URL", "http://127.0.0.1:1234/v1")
+LM_STUDIO_KEY = os.getenv("LM_STUDIO_KEY", "lm-studio")
 
-MODEL = os.getenv("LM_STUDIO_MODEL", "openai/gpt-oss-20b")
+MODEL = os.getenv("LM_STUDIO_MODEL", "nvidia/nemotron-3-nano")
 TEMPERATURE = float(os.getenv("AGENT_TEMPERATURE", "0.2"))
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -164,14 +163,26 @@ def build_messages(
 
 
 def call_agent(messages: list[dict]) -> str:
-    """Send messages to gpt-oss-20b and return the raw text."""
-    resp = openai.ChatCompletion.create(
-        model=MODEL,
-        messages=messages,
-        temperature=TEMPERATURE,
-        max_tokens=4096,
+    """Send messages to LLM and return the raw text."""
+    url = f"{LM_STUDIO_URL}/chat/completions"
+    payload = json.dumps({
+        "model": MODEL,
+        "messages": messages,
+        "temperature": TEMPERATURE,
+        "max_tokens": 4096,
+    }).encode("utf-8")
+    req = urllib.request.Request(
+        url,
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {LM_STUDIO_KEY}",
+        },
+        method="POST",
     )
-    return resp.choices[0].message.content.strip()
+    with urllib.request.urlopen(req, timeout=300) as resp:
+        data = json.loads(resp.read().decode("utf-8"))
+    return data["choices"][0]["message"]["content"].strip()
 
 
 def strip_markdown_fences(text: str) -> str:
@@ -270,7 +281,7 @@ def generate(
     image_context = describe_image_url(image) if image else None
 
     print(f"🔧 Generating {component_name} in {category}...")
-    print(f"   Model: {MODEL} @ {openai.api_base}")
+    print(f"   Model: {MODEL} @ {LM_STUDIO_URL}")
 
     messages = build_messages(
         prompt, category, url_context, image_context

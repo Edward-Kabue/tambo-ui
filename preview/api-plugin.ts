@@ -8,6 +8,7 @@ import type { Plugin } from "vite";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { spawn } from "child_process";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,6 +16,9 @@ const PROMPTS_DIR = path.resolve(__dirname, "../tambo_agent/prompts");
 const SYSTEM_FILE = path.join(PROMPTS_DIR, "system_creative.txt");
 const EXAMPLES_FILE = path.join(PROMPTS_DIR, "few_shot_examples.json");
 const CAPTURES_DIR = path.resolve(__dirname, "public/captures");
+const SCRIPTS_DIR = path.resolve(__dirname, "../scripts");
+const COMPONENTS_DIR = path.resolve(__dirname, "../generated_components");
+const MANIFEST_FILE = path.join(COMPONENTS_DIR, "index.json");
 
 function readBody(req: any): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -159,6 +163,99 @@ export function promptApiPlugin(): Plugin {
             }
           } catch (err: any) {
             res.statusCode = 500;
+            res.end(JSON.stringify({ error: err.message }));
+          }
+          return;
+        }
+
+        // --- Generate component ---
+        if (req.url === "/api/generate" && req.method === "POST") {
+          try {
+            const body = JSON.parse(await readBody(req));
+            const { prompt, category, name, url, image } = body;
+
+            if (!prompt || !category) {
+              res.statusCode = 400;
+              res.end(JSON.stringify({ error: "prompt and category are required" }));
+              return;
+            }
+
+            // Build command args
+            const args = [path.join(SCRIPTS_DIR, "generate.py"), prompt, "--category", category];
+            if (name) args.push("--name", name);
+            if (url) args.push("--url", url);
+            if (image) args.push("--image", image);
+
+            // Use python3 on macOS/Linux
+            const pythonCmd = process.platform === "win32" ? "python" : "python3";
+            
+            // Spawn python process
+            const proc = spawn(pythonCmd, args, {
+              cwd: path.resolve(__dirname, ".."),
+              env: { ...process.env },
+            });
+
+            let stdout = "";
+            let stderr = "";
+            let responseSent = false;
+
+            const sendResponse = (statusCode: number, data: any) => {
+              if (responseSent) return;
+              responseSent = true;
+              res.statusCode = statusCode;
+              res.setHeader("Content-Type", "application/json");
+              res.end(JSON.stringify(data));
+            };
+
+            proc.stdout.on("data", (data: Buffer) => {
+              stdout += data.toString();
+            });
+
+            proc.stderr.on("data", (data: Buffer) => {
+              stderr += data.toString();
+            });
+
+            proc.on("close", (code: number) => {
+              if (code !== 0) {
+                sendResponse(500, {
+                  error: "Generation failed",
+                  details: stderr || stdout,
+                });
+                return;
+              }
+
+              // Read manifest to get the generated component info
+              try {
+                const manifest = JSON.parse(fs.readFileSync(MANIFEST_FILE, "utf-8"));
+                const latest = manifest[manifest.length - 1];
+                const componentPath = path.join(COMPONENTS_DIR, latest.file);
+                const code = fs.readFileSync(componentPath, "utf-8");
+
+                sendResponse(200, {
+                  ok: true,
+                  component: {
+                    name: latest.name,
+                    category: latest.category,
+                    file: latest.file,
+                    code,
+                  },
+                  output: stdout,
+                });
+              } catch (readErr: any) {
+                sendResponse(200, {
+                  ok: true,
+                  output: stdout,
+                  warning: "Could not read generated component",
+                });
+              }
+            });
+
+            proc.on("error", (err: Error) => {
+              sendResponse(500, { error: `Failed to spawn process: ${err.message}` });
+            });
+
+          } catch (err: any) {
+            res.statusCode = 400;
             res.end(JSON.stringify({ error: err.message }));
           }
           return;
