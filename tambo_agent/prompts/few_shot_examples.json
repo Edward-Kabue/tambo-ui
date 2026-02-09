@@ -1,0 +1,32 @@
+[
+  {
+    "category": "3d-scenes",
+    "prompt": "A floating 3D torus knot with metallic material and soft lighting",
+    "component_name": "FloatingKnot",
+    "output_snippet": "import React, { useRef } from 'react';\nimport { Canvas, useFrame } from '@react-three/fiber';\nimport { Float, Environment } from '@react-three/drei';\n\ninterface Props { speed?: number; color?: string; className?: string; }\n\nexport default function FloatingKnot({ speed = 1, color = '#6c5ce7', className }: Props) {\n  // ... Canvas + Float + mesh + torusKnotGeometry\n}"
+  },
+  {
+    "category": "scroll-animations",
+    "prompt": "A section that fades in and slides up as you scroll into view",
+    "component_name": "ParallaxReveal",
+    "output_snippet": "import React, { useRef, useLayoutEffect } from 'react';\nimport gsap from 'gsap';\nimport { ScrollTrigger } from 'gsap/ScrollTrigger';\ngsap.registerPlugin(ScrollTrigger);\n\ninterface Props { children: React.ReactNode; offset?: number; className?: string; }\n\nexport default function ParallaxReveal({ children, offset = 80, className }: Props) {\n  // ... useLayoutEffect with gsap.fromTo + ScrollTrigger\n}"
+  },
+  {
+    "category": "micro-interactions",
+    "prompt": "A button that magnetically follows the cursor on hover",
+    "component_name": "MagneticButton",
+    "output_snippet": "import React, { useRef, useCallback } from 'react';\nimport gsap from 'gsap';\n\ninterface Props { children: React.ReactNode; strength?: number; className?: string; }\n\nexport default function MagneticButton({ children, strength = 0.35, className }: Props) {\n  // ... onMouseMove gsap.to + onMouseLeave reset\n}"
+  },
+  {
+    "category": "shader-backgrounds",
+    "prompt": "An animated gradient mesh background with flowing colors",
+    "component_name": "AuroraMesh",
+    "output_snippet": "import React, { useRef, useMemo } from 'react';\nimport { Canvas, useFrame } from '@react-three/fiber';\nimport * as THREE from 'three';\n\ninterface Props { colors?: string[]; speed?: number; className?: string; }\n\nexport default function AuroraMesh({ colors, speed = 1, className }: Props) {\n  // ... Canvas + custom ShaderMaterial with GLSL\n}"
+  },
+  {
+    "category": "page-transitions",
+    "prompt": "A full-page wipe transition that reveals new content",
+    "component_name": "WipeTransition",
+    "output_snippet": "import React, { useRef, useLayoutEffect, useState } from 'react';\nimport gsap from 'gsap';\n\ninterface Props { active: boolean; direction?: 'left' | 'right' | 'up' | 'down'; children: React.ReactNode; className?: string; }\n\nexport default function WipeTransition({ active, direction = 'left', children, className }: Props) {\n  // ... gsap.to clipPath animation\n}"
+  }
+]

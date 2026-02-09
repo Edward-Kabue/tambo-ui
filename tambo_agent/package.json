@@ -1,0 +1,13 @@
+{
+  "name": "tambo_agent",
+  "version": "1.0.0",
+  "description": "Demo project for Tambo + GPT‑OSS‑20B",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {
+    "@tambo-ai/react": "^0.3.0",
+    "zod": "^3.22.4"
+  }
+}

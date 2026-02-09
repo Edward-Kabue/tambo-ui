@@ -1,0 +1,15 @@
+# agent/tambo_agent/requirements.txt
+
+# Core dependencies for the Tambo agent
+tambo==0.3.0            # Replace with the exact version you intend to use
+prompt-toolkit==3.0.45
+
+# OpenAI client (used for LM Studio local endpoint)
+openai==1.52.0
+
+# For type checking and development (not required at runtime)
+typing-extensions==4.12.2
+
+# Web fetching (stdlib urllib used, no extra deps needed)
+# Image processing (optional, for future vision model support)
+# Pillow==10.4.0

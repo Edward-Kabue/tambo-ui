@@ -1,0 +1,25 @@
+{
+  "name": "creative-components",
+  "version": "1.0.0",
+  "description": "AI-generated Three.js & GSAP React components",
+  "private": true,
+  "peerDependencies": {
+    "@react-three/drei": "^9.117.0",
+    "@react-three/fiber": "^8.17.0",
+    "gsap": "^3.12.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.5.0",
+    "@types/react": "^18.3.28",
+    "@types/three": "^0.170.0",
+    "gsap": "^3.14.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "three": "^0.182.0",
+    "typescript": "^5.9.3"
+  }
+}

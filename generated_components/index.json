@@ -1,0 +1,82 @@
+[
+  {
+    "name": "FloatingKnot",
+    "category": "3d-scenes",
+    "file": "3d-scenes/FloatingKnot.tsx",
+    "prompt": "A floating 3D torus knot with metallic material and soft lighting",
+    "prompt_hash": "seed_001",
+    "generated_at": "2026-02-09T00:00:00+00:00"
+  },
+  {
+    "name": "ProductViewer",
+    "category": "3d-scenes",
+    "file": "3d-scenes/ProductViewer.tsx",
+    "prompt": "Interactive 3D product viewer with image texture, auto-rotation, and zoom",
+    "prompt_hash": "seed_002",
+    "generated_at": "2026-02-09T00:00:00+00:00"
+  },
+  {
+    "name": "ParallaxReveal",
+    "category": "scroll-animations",
+    "file": "scroll-animations/ParallaxReveal.tsx",
+    "prompt": "Content section that fades in and slides up on scroll",
+    "prompt_hash": "seed_003",
+    "generated_at": "2026-02-09T00:00:00+00:00"
+  },
+  {
+    "name": "HorizontalScroll",
+    "category": "scroll-animations",
+    "file": "scroll-animations/HorizontalScroll.tsx",
+    "prompt": "Horizontal scroll section that pins and scrolls children horizontally",
+    "prompt_hash": "seed_004",
+    "generated_at": "2026-02-09T00:00:00+00:00"
+  },
+  {
+    "name": "MagneticButton",
+    "category": "micro-interactions",
+    "file": "micro-interactions/MagneticButton.tsx",
+    "prompt": "Button that magnetically follows the cursor on hover",
+    "prompt_hash": "seed_005",
+    "generated_at": "2026-02-09T00:00:00+00:00"
+  },
+  {
+    "name": "PulseLoader",
+    "category": "micro-interactions",
+    "file": "micro-interactions/PulseLoader.tsx",
+    "prompt": "Animated loading spinner with staggered dots",
+    "prompt_hash": "seed_006",
+    "generated_at": "2026-02-09T00:00:00+00:00"
+  },
+  {
+    "name": "AuroraMesh",
+    "category": "shader-backgrounds",
+    "file": "shader-backgrounds/AuroraMesh.tsx",
+    "prompt": "Animated aurora gradient mesh background with flowing colors",
+    "prompt_hash": "seed_007",
+    "generated_at": "2026-02-09T00:00:00+00:00"
+  },
+  {
+    "name": "ParticleFog",
+    "category": "shader-backgrounds",
+    "file": "shader-backgrounds/ParticleFog.tsx",
+    "prompt": "Animated particle fog dust background using Three.js points",
+    "prompt_hash": "seed_008",
+    "generated_at": "2026-02-09T00:00:00+00:00"
+  },
+  {
+    "name": "WipeTransition",
+    "category": "page-transitions",
+    "file": "page-transitions/WipeTransition.tsx",
+    "prompt": "Full-page wipe transition that reveals content with a sliding clip-path",
+    "prompt_hash": "seed_009",
+    "generated_at": "2026-02-09T00:00:00+00:00"
+  },
+  {
+    "name": "CrossfadeDepth",
+    "category": "page-transitions",
+    "file": "page-transitions/CrossfadeDepth.tsx",
+    "prompt": "Crossfade page transition with depth scale and opacity",
+    "prompt_hash": "seed_010",
+    "generated_at": "2026-02-09T00:00:00+00:00"
+  }
+]
