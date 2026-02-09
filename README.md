@@ -182,6 +182,6 @@ Key tests cover:
 
 ## License
 
-MIT © 2026 Your Name
+MIT © 2026 EDWARD KABUE
 
 ---

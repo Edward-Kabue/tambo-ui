@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Gallery from "./Gallery";
+import PromptStudio from "./PromptStudio";
 
 const styles: Record<string, React.CSSProperties> = {
   app: {
@@ -65,30 +66,59 @@ const CATEGORIES = [
 
 const App: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState("all");
+  const [view, setView] = useState<"gallery" | "prompts">("gallery");
 
   return (
     <div style={styles.app}>
       <header style={styles.header}>
-        <h1 style={styles.title}>Creative Components Gallery</h1>
-        <p style={styles.subtitle}>
-          AI-generated Three.js & GSAP components. Copy any component into your
-          React project — each is a single self-contained .tsx file.
-        </p>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div>
+            <h1 style={styles.title}>Creative Components Gallery</h1>
+            <p style={styles.subtitle}>
+              AI-generated Three.js & GSAP components. Copy any component into your
+              React project — each is a single self-contained .tsx file.
+            </p>
+          </div>
+          <button
+            onClick={() => setView(view === "gallery" ? "prompts" : "gallery")}
+            style={{
+              padding: "10px 20px",
+              borderRadius: "8px",
+              border: view === "prompts" ? "1px solid #6c5ce7" : "1px solid #333",
+              background: view === "prompts" ? "#6c5ce722" : "transparent",
+              color: view === "prompts" ? "#6c5ce7" : "#aaa",
+              fontSize: "13px",
+              fontWeight: 600,
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              whiteSpace: "nowrap" as const,
+              flexShrink: 0,
+              marginTop: "4px",
+            }}
+          >
+            {view === "prompts" ? "Back to Gallery" : "Prompt Studio"}
+          </button>
+        </div>
       </header>
 
-      <nav style={styles.nav}>
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() => setActiveCategory(cat.id)}
-            style={activeCategory === cat.id ? styles.navBtnActive : styles.navBtn}
-          >
-            {cat.label}
-          </button>
-        ))}
-      </nav>
-
-      <Gallery activeCategory={activeCategory} />
+      {view === "gallery" ? (
+        <>
+          <nav style={styles.nav}>
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                style={activeCategory === cat.id ? styles.navBtnActive : styles.navBtn}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </nav>
+          <Gallery activeCategory={activeCategory} />
+        </>
+      ) : (
+        <PromptStudio />
+      )}
     </div>
   );
 };

@@ -1,9 +1,10 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import { promptApiPlugin } from "./api-plugin";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), promptApiPlugin()],
   resolve: {
     alias: {
       "@components": path.resolve(__dirname, "../generated_components"),

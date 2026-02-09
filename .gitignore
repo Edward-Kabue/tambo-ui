@@ -18,6 +18,8 @@ build/
 node_modules/
 npm-debug.log*
 yarn-debug.log*
+!README.md
+*.md
 yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
@@ -150,3 +152,4 @@ BRD_Creative_Components.md
 
 # Generated component manifest (optional - uncomment if you want to regenerate on each machine)
 # generated_components/index.json
+.github/copilot-instructions.md
